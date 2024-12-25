@@ -114,21 +114,27 @@ body {
       <div class="stat"><span>Dash:</span><span id="dashStat">0</span></div>
       <div class="stat"><span>Burst Resistance:</span><span id="burstresStat">0</span></div>
     </div>
+    <div>
+      <h3>Dimensions</h3>
+      <p>Weight: <span id="weightStat">0 g</span></p>
+      <p>Height: <span id="heightStat">0 cm</span></p>
+      <p>Width: <span id="widthStat">0 cm</span></p>
+    </div>
   </div>
 </div>
 <script>
 const beybladeParts = {
   blades: [
-    { name: "Dran Sword", attack: 4, defense: 3, stamina: 2, dash: 2, burstres: 1 },
-    { name: "Dran Buster", attack: 3, defense: 5, stamina: 1 ,dash: 2, burstres: 1 },
+    { name: "Dran Sword", attack: 4, defense: 3, stamina: 2, dash: 2, burstres: 1, weight: 3, height: 2, width: 2 },
+    { name: "Dran Buster", attack: 3, defense: 5, stamina: 1 ,dash: 2, burstres: 1, weight: 2, height: 4, width: 1 },
   ],
   ratchets: [
-    { name: "1-60", attack: 2, defense: 1, stamina: 3, dash: 3, burstres: 2 },
-    { name: "3-60", attack: 1, defense: 2, stamina: 4, dash: 2, burstres: 1 },
+    { name: "1-60", attack: 2, defense: 1, stamina: 3, dash: 3, burstres: 2, weight: 1, height: 3, width: 3 },
+    { name: "3-60", attack: 1, defense: 2, stamina: 4, dash: 2, burstres: 1, weight: 4, height: 1, width: 4 },
   ],
   bits: [
-    { name: "Flat", attack: 1, defense: 2, stamina: 3, dash: 4, burstres: 5 },
-    { name: "Accel", attack: 2, defense: 1, stamina: 4, dash: 1, burstres: 3 },
+    { name: "Flat", attack: 1, defense: 2, stamina: 3, dash: 4, burstres: 5, weight: 2, height: 2, width: 2 },
+    { name: "Accel", attack: 2, defense: 1, stamina: 4, dash: 1, burstres: 3, weight: 1, height: 3, width: 4 },
   ],
 };
 
@@ -149,11 +155,19 @@ function updatePreview() {
   const dash = (beyblade.blade ? beyblade.blade.dash : 0) + (beyblade.ratchet ? beyblade.ratchet.dash : 0) + (beyblade.bit ? beyblade.bit.dash : 0);
   const burstres = (beyblade.blade ? beyblade.blade.burstres : 0) + (beyblade.ratchet ? beyblade.ratchet.burstres : 0) + (beyblade.bit ? beyblade.bit.burstres : 0);
 
+  const weight = (beyblade.blade ? beyblade.blade.weight : 0) + (beyblade.ratchet ? beyblade.ratchet.weight : 0) + (beyblade.bit ? beyblade.bit.weight : 0);
+  const height = Math.max(beyblade.blade ? beyblade.blade.height : 0, beyblade.ratchet ? beyblade.ratchet.height : 0, beyblade.bit ? beyblade.bit.height : 0);
+  const width = Math.max(beyblade.blade ? beyblade.blade.width : 0, beyblade.ratchet ? beyblade.ratchet.width : 0, beyblade.bit ? beyblade.bit.width : 0);
+
   document.getElementById('attackStat').innerText = attack;
   document.getElementById('defenseStat').innerText = defense;
   document.getElementById('staminaStat').innerText = stamina;
   document.getElementById('dashStat').innerText = dash;
   document.getElementById('burstresStat').innerText = burstres;
+
+  document.getElementById('weightStat').innerText = weight + ' g';
+  document.getElementById('heightStat').innerText = height + ' cm';
+  document.getElementById('widthStat').innerText = width + ' cm';
 }
 
 function removeBlade() {
