@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Beyblade X Builder</title>
+<style>
+body {
+  background-color: #222;
+  color: white;
+  font-family: sans-serif;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.card {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.part-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #444;
+  border-radius: 5px;
+}
+
+.part-selector input {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  padding: 5px 10px;
+  flex-grow: 1;
+}
+
+.part-selector .delete-button {
+  background-color: #800080;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.beyblade-preview {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.beyblade-part {
+  width: 100px;
+  height: 100px;
+  background-color: black;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  color: white;
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stat {
+  background-color: #555;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <h1>Beyblade X Builder</h1>
+    <div class="part-selector">
+      <input type="text" id="bladeInput" placeholder="Select Blade" />
+      <button class="delete-button" onclick="removeBlade()">Remove</button>
+    </div>
+    <div class="part-selector">
+      <input type="text" id="ratchetInput" placeholder="Select Ratchet" />
+      <button class="delete-button" onclick="removeRatchet()">Remove</button>
+    </div>
+    <div class="part-selector">
+      <input type="text" id="bitInput" placeholder="Select Bit" />
+      <button class="delete-button" onclick="removeBit()">Remove</button>
+    </div>
+    <div class="beyblade-preview" id="beybladePreview">
+      <div class="beyblade-part" id="bladePreview">Blade</div>
+      <div class="beyblade-part" id="ratchetPreview">Ratchet</div>
+      <div class="beyblade-part" id="bitPreview">Bit</div>
+    </div>
+    <div class="stats" id="statsDisplay">
+      <div class="stat"><span>Attack:</span><span id="attackStat">0</span></div>
+      <div class="stat"><span>Defense:</span><span id="defenseStat">0</span></div>
+      <div class="stat"><span>Stamina:</span><span id="staminaStat">0</span></div>
+      <div class="stat"><span>Dash:</span><span id="dashStat">0</span></div>
+      <div class="stat"><span>Burst Resistance:</span><span id="burstresStat">0</span></div>
+    </div>
+  </div>
+</div>
+<script>
+const beybladeParts = {
+  blades: [
+    { name: "Dran Sword", attack: 4, defense: 3, stamina: 2, dash: 2, burstres: 1 },
+    { name: "Dran Buster", attack: 3, defense: 5, stamina: 1 ,dash: 2, burstres: 1 },
+  ],
+  ratchets: [
+    { name: "1-60", attack: 2, defense: 1, stamina: 3, dash: 3, burstres: 2 },
+    { name: "3-60", attack: 1, defense: 2, stamina: 4, dash: 2, burstres: 1 },
+  ],
+  bits: [
+    { name: "Flat", attack: 1, defense: 2, stamina: 3, dash: 4, burstres: 5 },
+    { name: "Accel", attack: 2, defense: 1, stamina: 4, dash: 1, burstres: 3 },
+  ],
+};
+
+let beyblade = {
+  blade: null,
+  ratchet: null,
+  bit: null,
+};
+
+function updatePreview() {
+  document.getElementById('bladePreview').innerText = beyblade.blade ? beyblade.blade.name : 'Blade';
+  document.getElementById('ratchetPreview').innerText = beyblade.ratchet ? beyblade.ratchet.name : 'Ratchet';
+  document.getElementById('bitPreview').innerText = beyblade.bit ? beyblade.bit.name : 'Bit';
+  
+  const attack = (beyblade.blade ? beyblade.blade.attack : 0) + (beyblade.ratchet ? beyblade.ratchet.attack : 0) + (beyblade.bit ? beyblade.bit.attack : 0);
+  const defense = (beyblade.blade ? beyblade.blade.defense : 0) + (beyblade.ratchet ? beyblade.ratchet.defense : 0) + (beyblade.bit ? beyblade.bit.defense : 0);
+  const stamina = (beyblade.blade ? beyblade.blade.stamina : 0) + (beyblade.ratchet ? beyblade.ratchet.stamina : 0) + (beyblade.bit ? beyblade.bit.stamina : 0);
+  const dash = (beyblade.blade ? beyblade.blade.dash : 0) + (beyblade.ratchet ? beyblade.ratchet.dash : 0) + (beyblade.bit ? beyblade.bit.dash : 0);
+  const burstres = (beyblade.blade ? beyblade.blade.burstres : 0) + (beyblade.ratchet ? beyblade.ratchet.burstres : 0) + (beyblade.bit ? beyblade.bit.burstres : 0);
+
+  document.getElementById('attackStat').innerText = attack;
+  document.getElementById('defenseStat').innerText = defense;
+  document.getElementById('staminaStat').innerText = stamina;
+  document.getElementById('dashStat').innerText = dash;
+  document.getElementById('burstresStat').innerText = burstres;
+}
+
+function removeBlade() {
+  beyblade.blade = null;
+  updatePreview();
+}
+
+function removeRatchet() {
+  beyblade.ratchet = null;
+  updatePreview();
+}
+
+function removeBit() {
+  beyblade.bit = null;
+  updatePreview();
+}
+
+// Example of setting a part
+function selectBlade(name) {
+  beyblade.blade = beybladeParts.blades.find(b => b.name === name);
+  updatePreview();
+}
+
+function selectRatchet(name) {
+  beyblade.ratchet = beybladeParts.ratchets.find(r => r.name === name);
+  updatePreview();
+}
+
+function selectBit(name) {
+  beyblade.bit = beybladeParts.bits.find(b => b.name === name);
+  updatePreview();
+}
+
+// Event listeners for input fields
+document.getElementById('bladeInput').addEventListener('change', (event) => selectBlade(event.target.value));
+document.getElementById('ratchetInput').addEventListener('change', (event) => selectRatchet(event.target.value));
+document.getElementById('bitInput').addEventListener('change', (event) => selectBit(event.target.value));
+</script>
+</body>
+</html>
